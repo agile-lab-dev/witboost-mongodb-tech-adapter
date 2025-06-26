@@ -1,0 +1,8 @@
+__pycache__/
+.coverage
+*.xml
+.idea
+**/.python-version
+dist
+*.bkp
+/pymongo-quickstart
