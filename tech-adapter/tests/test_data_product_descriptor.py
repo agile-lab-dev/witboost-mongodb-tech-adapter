@@ -320,7 +320,8 @@ class TestDataProductDescriptor(unittest.TestCase):
         descriptor_str = Path("tests/descriptors/descriptor_output_port_valid.yaml").read_text()
         request = yaml.safe_load(descriptor_str)
         data_product = parse_yaml_with_model(request.get("dataProduct"), DataProduct)
-        component_to_provision = request.get("componentIdToProvision")
+        subcomponent_to_provision = request.get("componentIdToProvision")
+        component_to_provision = subcomponent_to_provision.rsplit(":", 1)[0]
 
         assert data_product.get_typed_component_by_id(component_to_provision, OutputPort) is not None
 

@@ -14,26 +14,26 @@ dataProduct:
   devGroup: group:dev
   informationSLA: 2BD
   maturity: Tactical
-  billing: { }
-  tags: [ ]
-  specific: { }
+  billing: {}
+  tags: []
+  specific: {}
   domainId: urn:dmb:dmn:healthcare
   useCaseTemplateId: urn:dmb:utm:dataproduct-template:0.0.0
   infrastructureTemplateId: urn:dmb:itm:dataproduct-provisioner:1
   components:
     - kind: storage
-      id: urn:dmb:cmp:healthcare:vaccinations:0:snowflake-storage
-      description: Snowflake Storage
-      name: Snowflake Storage
-      fullyQualifiedName: Snowflake Storage
+      id: urn:dmb:cmp:healthcare:vaccinations:0:mongodb-storage
+      description: MongoDB Storage
+      name: MongoDB Storage
+      fullyQualifiedName: MongoDB Storage
       version: 0.0.0
-      infrastructureTemplateId: urn:dmb:itm:snowflake-storage-provisioner:0
-      useCaseTemplateId: urn:dmb:utm:snowflake-storage-template:0.0.0
-      dependsOn: [ ]
-      platform: Snowflake
-      technology: Snowflake
+      infrastructureTemplateId: urn:dmb:itm:mongodb-storage-provisioner:0
+      useCaseTemplateId: urn:dmb:utm:mongodb-storage-template:0.0.0
+      dependsOn: []
+      platform: MongoDB
+      technology: MongoDB
       StorageType: Database
-      tags: [ ]
+      tags: []
       specific:
         database: HEALTHCARE
         schema: TESTVACCINATIONSNICO_0
@@ -72,15 +72,15 @@ dataProduct:
                 precision: 38
                 scale: 0
     - kind: outputport
-      id: urn:dmb:cmp:healthcare:vaccinations:0:snowflake-output-port
+      id: urn:dmb:cmp:healthcare:vaccinations:0:mongodb-output-port
       description: Example data product for the Vaccinations use case
-      name: Snowflake Output Port
-      fullyQualifiedName: Snowflake Output Port
+      name: MongoDB Output Port
+      fullyQualifiedName: MongoDB Output Port
       version: 0.0.0
-      infrastructureTemplateId: urn:dmb:itm:snowflake-outputport-provisioner:0
-      useCaseTemplateId: urn:dmb:utm:snowflake-outputport-template:0.0.0
+      infrastructureTemplateId: urn:dmb:itm:mongodb-outputport-provisioner:0
+      useCaseTemplateId: urn:dmb:utm:mongodb-outputport-template:0.0.0
       dependsOn:
-        - urn:dmb:cmp:healthcare:vaccinations:0:snowflake-storage
+        - urn:dmb:cmp:healthcare:vaccinations:0:mongodb-storage
       platform: Snowflake
       technology: Snowflake
       outputPortType: SQL
@@ -91,7 +91,7 @@ dataProduct:
           - name: date
             description: null
             dataType: DATE
-            tags: [ ]
+            tags: []
           - name: location_key
             description: null
             dataType: TEXT
@@ -106,44 +106,123 @@ dataProduct:
             dataType: NUMBER
             precision: 38
             scale: 0
-            tags: [ ]
+            tags: []
           - name: new_persons_fully_vaccinated
             description: null
             dataType: NUMBER
             precision: 38
             scale: 0
-            tags: [ ]
+            tags: []
           - name: new_vaccine_doses_administered
             description: null
             dataType: NUMBER
             precision: 38
             scale: 0
-            tags: [ ]
+            tags: []
           - name: newcolumn
             description: null
             dataType: TEXT
             dataLength: 16777216
-            tags: [ ]
+            tags: []
         SLA:
           intervalOfChange: 2BD
           timeliness: 2BD
           upTime: 99.9%
         termsAndConditions: Can be used for production purposes test.
-      tags: [ ]
-      sampleData: { }
-      semanticLinking: [ ]
+      tags: []
+      sampleData: {}
+      semanticLinking: []
       specific:
-        viewName: vaccinations_view
-        tableName: vaccinations_clean
-        database: HEALTHCARE
-        schema: TESTVACCINATIONSNICO_0
+        database: database
       dataSharingAgreement:
         purpose: Foundational data for downstream use cases.
         billing: None.
         security: Platform standard security policies.
         intendedUsage: Any downstream use cases.
-        limitations: Needs joining with other datasets (eg customer data) for most
+        limitations:
+          Needs joining with other datasets (eg customer data) for most
           analytical use cases.
         lifeCycle: Data loaded every two days and typically never deleted.
         confidentiality: None.
-componentIdToProvision: urn:dmb:cmp:healthcare:vaccinations:0:snowflake-output-port
+      consumable: false
+      shoppable: false
+      components:
+        - kind: outputport
+          id: urn:dmb:cmp:healthcare:vaccinations:0:mongodb-output-port:mongodb-output-port-sub-component
+          description: Example data product for the Vaccinations use case
+          name: MongoDB Output Port
+          fullyQualifiedName: MongoDB Output Port
+          version: 0.0.0
+          infrastructureTemplateId: urn:dmb:itm:mongodb-outputport-provisioner:0
+          useCaseTemplateId: urn:dmb:utm:mongodb-outputport-template:0.0.0
+          dependsOn:
+            - urn:dmb:cmp:healthcare:vaccinations:0:mongodb-storage
+          platform: Snowflake
+          technology: Snowflake
+          outputPortType: SQL
+          creationDate: 2023-12-04T11:38:05.500Z
+          startDate: 2023-12-04T11:38:05.500Z
+          dataContract:
+            schema: []
+            SLA:
+              intervalOfChange: 2BD
+              timeliness: 2BD
+              upTime: 99.9%
+            termsAndConditions: Can be used for production purposes test.
+          tags: []
+          sampleData: {}
+          semanticLinking: []
+          specific:
+            collection: collection
+            valueSchema:
+              type: JSON
+              definition: |-
+                {
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "$id": "http://example.com/product.schema.json",
+                    "title": "Product",
+                    "description": "A product from Acme's catalog",
+                    "type": "object",
+                    "properties": {
+                        "productId": {
+                            "description": "The unique identifier for a product",
+                            "type": "integer"
+                        },
+                        "productName": {
+                            "description": "Name of the product",
+                            "type": "string"
+                        },
+                        "price": {
+                            "description": "The price of the product",
+                            "type": "number",
+                            "exclusiveMinimum": 0
+                        },
+                        "tags": {
+                            "description": "Tags for the product",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "minItems": 1,
+                            "uniqueItems": true
+                        }
+                    },
+                    "required": [
+                        "productId",
+                        "productName",
+                        "price"
+                    ]
+                }
+          dataSharingAgreement:
+            purpose: Foundational data for downstream use cases.
+            billing: None.
+            security: Platform standard security policies.
+            intendedUsage: Any downstream use cases.
+            limitations:
+              Needs joining with other datasets (eg customer data) for most
+              analytical use cases.
+            lifeCycle: Data loaded every two days and typically never deleted.
+            confidentiality: None.
+          consumable: true
+          shoppable: true
+componentIdToProvision: urn:dmb:cmp:healthcare:vaccinations:0:mongodb-output-port:mongodb-output-port-sub-component

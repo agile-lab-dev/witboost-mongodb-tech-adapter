@@ -5,6 +5,9 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
+from src.models.data_product_descriptor import DataProduct
+from src.models.mongodb_models import MongoDBOutputPort
+
 
 class Status(StrEnum):
     RUNNING = "RUNNING"
@@ -27,6 +30,24 @@ class ProvisioningRequest(BaseModel):
     descriptor: str = Field(
         ...,
         description="Descriptor specification in yaml format. Its structure changes according to `descriptorKind`.",  # noqa: E501
+    )
+    removeData: Optional[bool] = Field(
+        default=None,
+        description="If true, when a component is undeployed, its underlying data will also be deleted",
+    )  # noqa: E501
+
+
+class ProvisioningRequestMongoDB(BaseModel):
+    dataProduct: DataProduct
+    component: MongoDBOutputPort = Field(
+        ...,
+        description=(
+            "MongoDB Output Port component to be provisioned. "
+        ),
+    )
+    subcomponentId: str = Field(
+        ...,
+        description="Subcomponent identifier",
     )
     removeData: Optional[bool] = Field(
         default=None,

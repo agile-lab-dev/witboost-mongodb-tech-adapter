@@ -80,8 +80,8 @@ def test_validate_valid_descriptor():
 
     resp = client.post("/v1/validate", json=dict(validate_request))
 
-    assert resp.status_code == 500
-    assert "Response not yet implemented" in resp.json().get("error")
+    assert resp.status_code == 200
+    assert {"valid": True, "error": None} == resp.json()
 
 
 def test_updateacl_invalid_descriptor():

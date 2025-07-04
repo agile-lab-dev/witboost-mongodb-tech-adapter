@@ -21,6 +21,7 @@ from src.models.api_models import (
     ValidationResult,
     ValidationStatus,
 )
+from src.services.validation_service import ValidateMongoDBOutputPortDep
 
 
 def log_info(req_body, res_code, res_body):
@@ -172,7 +173,7 @@ def updateacl(request: UnpackedUpdateAclRequestDep) -> Response:
     responses={"200": {"model": ValidationResult}, "500": {"model": SystemErr}},
     tags=["TechAdapter"],
 )
-def validate(request: UnpackedProvisioningRequestDep) -> Response:
+def validate(request: ValidateMongoDBOutputPortDep) -> Response:
     """
     Validate a provisioning request
     """
@@ -180,16 +181,7 @@ def validate(request: UnpackedProvisioningRequestDep) -> Response:
     if isinstance(request, ValidationError):
         return check_response(ValidationResult(valid=False, error=request))
 
-    data_product, component_id, remove_data = request
-
-    # todo: define correct response. You can define your pydantic component type with the expected specific schema
-    #  and use `.get_type_component_by_id` to extract it from the data product
-
-    # componentToProvision = data_product.get_typed_component_by_id(component_id, MyTypedComponent)
-
-    resp = SystemErr(error="Response not yet implemented")
-
-    return check_response(out_response=resp)
+    return check_response(out_response=ValidationResult(valid=True))
 
 
 @app.post(

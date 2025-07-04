@@ -108,7 +108,6 @@ class Component(BaseModel):
     name: str
     fullyQualifiedName: Optional[str] = None
     description: str
-    specific: dict
 
 
 class OutputPort(Component):
