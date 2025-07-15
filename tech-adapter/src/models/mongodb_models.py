@@ -1,8 +1,8 @@
 import json
-from typing import Literal
+from typing import Literal, Type
 
 from loguru import logger
-from pydantic import AfterValidator, BaseModel, BeforeValidator, parse_obj_as
+from pydantic import AfterValidator, BaseModel, BeforeValidator, TypeAdapter
 from typing_extensions import Annotated, List
 
 from src.models.data_product_descriptor import OutputPort, component_map
@@ -46,7 +46,8 @@ def parse_subcomponent(data: dict | MongoDBOutputPortSubComponent) -> MongoDBOut
         if kind not in component_map:
             raise ValueError(f"Unknown component kind: {kind}")
         if issubclass(MongoDBOutputPortSubComponent, component_map[kind]):
-            component = parse_obj_as(MongoDBOutputPortSubComponent, data)
+            adapter = TypeAdapter(MongoDBOutputPortSubComponent)
+            component = adapter.validate_python(data)
         else:
             raise ValueError(f"Component kind {kind} does not have a subcomponent.")
         logger.debug("Parsed component: " + str(component))
@@ -86,10 +87,10 @@ class MongoDBOutputPort(OutputPort):
                 return subcomponent
         return None
 
-    def get_typed_subcomponent_by_id(self, subcomponent_id: str, subcomponent_type: MongoDBOutputPortSubComponent):
+    def get_typed_subcomponent_by_id(self, subcomponent_id: str, subcomponent_type: Type[BaseModel]):
         subcomponent = self.get_subcomponent_by_id(subcomponent_id)
         if subcomponent is not None:
-            return subcomponent_type.parse_obj(subcomponent.dict(by_alias=True))
+            return subcomponent_type.model_validate(subcomponent.model_dump(by_alias=True, mode="python"))
         else:
             return None
 

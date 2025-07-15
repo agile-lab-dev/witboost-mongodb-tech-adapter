@@ -121,6 +121,41 @@ _Note:_ the version for the project is automatically computed using information 
 
 **CI/CD:** the pipeline is based on GitLab CI as that's what we use internally. It's configured by the `.gitlab-ci.yaml` file in the root of the repository. You can use that as a starting point for your customizations.
 
+## Environment Setup
+
+Before starting the project locally, you need to create a `.env` file to configure the required environment variables.
+
+Below are the variables you need to include:
+
+```env
+# MongoDB connection string
+CONNECTION_STRING=mongodb://admin:admin@localhost:27017/
+
+# Name of the database that stores user information
+USERS_DATABASE=database_admin
+
+# Roles considered as developers
+DEVELOPER_ROLES=["dbOwner"]
+
+# Actions allowed for consumers
+CONSUMER_ACTIONS=["find"]
+```
+
+### Additional Info
+
+- The `CONNECTION_STRING` should point to your MongoDB instance.
+    - Make sure to replace `admin`, `admin`, `localhost`, and `27017` with your actual **username**, **password**, **host**, and **port**.
+
+> For more details on how to configure MongoDB connections with Python, see the official documentation:
+[MongoClient — PyMongo documentation](https://www.mongodb.com/docs/languages/python/pymongo-driver/current/connect/mongoclient/)
+
+
+- `USERS_DATABASE`: The name of the MongoDB database that contains user documents.  
+  - This database must already exist in your local MongoDB instance.  
+  You should create the database manually, assign its name to the `USERS_DATABASE` environment variable,  
+  and add some test users to it in order to run the project correctly.
+
+
 ## Running
 
 To run the server locally, use:

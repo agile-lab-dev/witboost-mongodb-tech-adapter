@@ -178,41 +178,39 @@ dataProduct:
               type: JSON
               definition: |-
                 {
-                    "$schema": "http://json-schema.org/draft-07/schema#",
-                    "$id": "http://example.com/product.schema.json",
-                    "title": "Product",
-                    "description": "A product from Acme's catalog",
-                    "type": "object",
+                  "$jsonSchema": {
+                    "bsonType": "object",
+                    "title": "Student Object Validation",
+                    "required": ["address", "major", "name", "year"],
                     "properties": {
-                        "productId": {
-                            "description": "The unique identifier for a product",
-                            "type": "integer"
-                        },
-                        "productName": {
-                            "description": "Name of the product",
-                            "type": "string"
-                        },
-                        "price": {
-                            "description": "The price of the product",
-                            "type": "number",
-                            "exclusiveMinimum": 0
-                        },
-                        "tags": {
-                            "description": "Tags for the product",
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            },
-                            "minItems": 1,
-                            "uniqueItems": true
-                        }
-                    },
-                    "required": [
-                        "productId",
-                        "productName",
-                        "price"
-                    ]
+                      "name": {
+                        "bsonType": "string",
+                        "description": "'name' must be a string and is required"
+                      },
+                      "year": {
+                        "bsonType": "int",
+                        "minimum": 2017,
+                        "maximum": 3017,
+                        "description": "'year' must be an integer in [ 2017, 3017 ] and is required"
+                      },
+                      "gpa": {
+                        "bsonType": ["double"],
+                        "description": "'gpa' must be a double if the field exists"
+                      }
+                    }
+                  }
                 }
+            dataSharingAgreement:
+              purpose: Foundational data for downstream use cases.
+              billing: None.
+              security: Platform standard security policies.
+              intendedUsage: Any downstream use cases.
+              limitations:
+                Needs joining with other datasets (eg customer data) for most
+                analytical use cases.
+              lifeCycle: Data loaded every two days and typically never deleted.
+              confidentiality: None.
+
           dataSharingAgreement:
             purpose: Foundational data for downstream use cases.
             billing: None.

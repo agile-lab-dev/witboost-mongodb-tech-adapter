@@ -10,6 +10,10 @@ from src.models.api_models import (
     ValidationError,
 )
 from src.models.data_product_descriptor import DataProduct
+from src.services.mongo_client_service import MongoDBClientService
+from src.services.principal_mapping_service import PrincipalMappingService
+from src.services.provision_service import ProvisionService
+from src.settings.mongodb_settings import MongoDBSettings
 from src.utility.parsing_pydantic_models import parse_yaml_with_model
 
 
@@ -124,3 +128,26 @@ UnpackedUpdateAclRequestDep = Annotated[
     Tuple[DataProduct, str, list[str]] | ValidationError,
     Depends(unpack_update_acl_request),
 ]
+
+
+def get_mongodb_settings() -> MongoDBSettings:
+    return MongoDBSettings()
+
+
+def get_mongodb_client_service(
+    mongodb_settings: Annotated[MongoDBSettings, Depends(get_mongodb_settings)],
+) -> MongoDBClientService:
+    return MongoDBClientService(mongodb_settings)
+
+def get_mapping_service() -> PrincipalMappingService:
+    return PrincipalMappingService()
+
+def get_provision_service(
+    mongodb_client_service: Annotated[MongoDBClientService, Depends(get_mongodb_client_service)],
+    mongodb_mapping_service: Annotated[PrincipalMappingService, Depends(get_mapping_service)],
+    mongodb_settings: Annotated[MongoDBSettings, Depends(get_mongodb_settings)],
+) -> ProvisionService:
+    return ProvisionService(mongodb_client_service, mongodb_mapping_service, mongodb_settings)
+
+
+ProvisionServiceDep = Annotated[ProvisionService, Depends(get_provision_service)]

@@ -1,17 +1,56 @@
 from pathlib import Path
+from unittest.mock import Mock
 
 from fastapi.encoders import jsonable_encoder
 from starlette.testclient import TestClient
 
+from src.dependencies import get_provision_service
 from src.main import app
 from src.models.api_models import (
     DescriptorKind,
     ProvisionInfo,
     ProvisioningRequest,
+    ProvisioningStatus,
     UpdateAclRequest,
 )
+from src.services.provision_service import ProvisionService
 
 client = TestClient(app)
+
+
+# TODO refine tests
+expected_valid_unprovision_response = ProvisioningStatus(
+    status="COMPLETED",
+    result="",
+    info=None,
+)
+
+expected_valid_provision_response = ProvisioningStatus(
+    status="COMPLETED",
+    result="",
+    info={
+        "publicInfo": {
+            "subcomponent_id": {
+                "type": "string",
+                "label": "Subcomponent ID",
+                "value": "urn:dmb:cmp:healthcare:vaccinations:0:mongodb-output-port:mongodb-output-port-sub-component",
+            },
+            "database": {"type": "string", "label": "Database Name", "value": "database"},
+            "collection": {"type": "string", "label": "Collection Name", "value": "collection2"},
+        },
+        "privateInfo": {},
+    },
+)
+
+
+def override_dependency() -> ProvisionService:
+    mock = Mock()
+    mock.provision.return_value = expected_valid_provision_response
+    mock.unprovision.return_value = expected_valid_unprovision_response
+    return mock
+
+
+app.dependency_overrides[get_provision_service] = override_dependency
 
 
 def test_provisioning_invalid_descriptor():
@@ -29,13 +68,12 @@ def test_provisioning_valid_descriptor():
     descriptor_str = Path("tests/descriptors/descriptor_output_port_valid.yaml").read_text()
 
     provisioning_request = ProvisioningRequest(
-        descriptorKind=DescriptorKind.COMPONENT_DESCRIPTOR, descriptor=descriptor_str
+        descriptorKind=DescriptorKind.COMPONENT_DESCRIPTOR, descriptor=descriptor_str, removeData=False
     )
 
     resp = client.post("/v1/provision", json=dict(provisioning_request))
 
-    assert resp.status_code == 500
-    assert "Response not yet implemented" in resp.json().get("error")
+    assert resp.status_code == 200
 
 
 def test_unprovisioning_invalid_descriptor():
@@ -53,13 +91,13 @@ def test_unprovisioning_valid_descriptor():
     descriptor_str = Path("tests/descriptors/descriptor_output_port_valid.yaml").read_text()
 
     unprovisioning_request = ProvisioningRequest(
-        descriptorKind=DescriptorKind.COMPONENT_DESCRIPTOR, descriptor=descriptor_str
+        descriptorKind=DescriptorKind.COMPONENT_DESCRIPTOR, descriptor=descriptor_str, removeData=True
     )
 
     resp = client.post("/v1/unprovision", json=dict(unprovisioning_request))
 
-    assert resp.status_code == 500
-    assert "Response not yet implemented" in resp.json().get("error")
+    assert resp.status_code == 200
+    assert resp.json() == {"status": "COMPLETED", "result": "", "info": None}
 
 
 def test_validate_invalid_descriptor():

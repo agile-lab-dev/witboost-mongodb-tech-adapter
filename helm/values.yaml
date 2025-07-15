@@ -18,7 +18,18 @@ image:
 # extraEnvVars:
 #   - name: FOO
 #     value: "10"
-extraEnvVars: []
+extraEnvVars:
+  - name: CONNECTION_STRING
+    valueFrom:
+      secretKeyRef:
+        name: mongodb-addons-secrets
+        key: CONNECTION_STRING
+  - name: USERS_DATABASE
+    value: ""
+  - name: DEVELOPER_ROLES
+    value: []
+  - name: CONSUMER_ACTIONS
+    value: []
 
 # -- readiness probe spec
 readinessProbe: {}
@@ -37,5 +48,4 @@ resources: {}
 
 # -- Allows you to specify common labels
 labels: {}
-
 

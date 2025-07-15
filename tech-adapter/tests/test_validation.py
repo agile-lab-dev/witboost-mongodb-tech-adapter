@@ -32,9 +32,9 @@ class TestValidation(unittest.TestCase):
         invalid_subcomponent_to_provision = request.get("componentIdToProvision")
         invalid_component_to_provision = invalid_subcomponent_to_provision.rsplit(":", 1)[0]
 
-        assert ":" in invalid_component_to_provision, (
-            "Invalid subcomponent ID format: not expecting ':' in component_id"
-        )
+        assert (
+            ":" in invalid_component_to_provision
+        ), "Invalid subcomponent ID format: not expecting ':' in component_id"
 
         invalid_component = data_product.get_typed_component_by_id(invalid_component_to_provision, MongoDBOutputPort)
         assert invalid_component is None

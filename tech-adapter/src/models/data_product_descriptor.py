@@ -308,7 +308,8 @@ class DataProduct(BaseModel):
     def get_typed_component_by_id(self, component_id: str, component_type: Type[BaseModel]):
         component = self.get_component_by_id(component_id)
         if component is not None:
-            return component_type.parse_obj(component.dict(by_alias=True))
+            return component_type.model_validate(component.model_dump(by_alias=True, mode="python"))
+
         else:
             return None
 
