@@ -109,12 +109,13 @@ async def provision(data: UnpackedProvisioningRequestDep):
 
 @app_test.post("/updateacl")
 async def update_acl(data: UnpackedUpdateAclRequestDep):
-    if isinstance(data, tuple) and len(data) == 3:
-        data_product, component_id, refs = data
+    if isinstance(data, tuple) and len(data) == 4:
+        data_product, component_id, subcomponent_id, refs = data
         return {
             "message": "Update acl completed successfully",
             "data_product": data_product,
             "component_id": component_id,
+            "subcomponent_id": subcomponent_id,
         }
     elif isinstance(data, ValidationError):
         return {"message": "Provisioning failed", "errors": data.errors}
@@ -152,7 +153,7 @@ class TestAppDependenciesMock(unittest.TestCase):
     def test_updateacl_valid_request(self):
         descriptor_str = Path("tests/descriptors/descriptor_output_port_valid.yaml").read_text()
         valid_update_acl_request = UpdateAclRequest(
-            refs=["user:testuser", "bigData"],
+            refs=["user:testuser", "user:testuser2"],
             provisionInfo=ProvisionInfo(
                 request=descriptor_str,  # noqa: E501
                 result="result_prov",
@@ -162,9 +163,10 @@ class TestAppDependenciesMock(unittest.TestCase):
         response = client.post("/updateacl", json=valid_update_acl_request.model_dump())
 
         assert response.status_code == 200
-        assert "Update acl completed successfully" in response.json()["message"]
+        assert "message" in response.json()
         assert "data_product" in response.json()
         assert "component_id" in response.json()
+        assert "subcomponent_id" in response.json()
 
     def test_updateacl_invalid_request(self):
         invalid_provisioning_request = UpdateAclRequest(

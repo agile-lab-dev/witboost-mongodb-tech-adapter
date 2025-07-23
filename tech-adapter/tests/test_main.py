@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from fastapi.encoders import jsonable_encoder
 from starlette.testclient import TestClient
 
-from src.dependencies import get_provision_service
+from src.dependencies import get_provision_service, get_update_acl_service
 from src.main import app
 from src.models.api_models import (
     DescriptorKind,
@@ -14,6 +14,7 @@ from src.models.api_models import (
     UpdateAclRequest,
 )
 from src.services.provision_service import ProvisionService
+from src.services.update_acl_service import UpdateAclService
 
 client = TestClient(app)
 
@@ -42,6 +43,10 @@ expected_valid_provision_response = ProvisioningStatus(
     },
 )
 
+expected_valid_update_acl_response = ProvisioningStatus(
+    status="COMPLETED", result="", info={"publicInfo": {"updated_acls": [], "removed_acls": []}, "privateInfo": {}}
+)
+
 
 def override_dependency() -> ProvisionService:
     mock = Mock()
@@ -50,7 +55,14 @@ def override_dependency() -> ProvisionService:
     return mock
 
 
+def override_acl_dependency() -> UpdateAclService:
+    mock = Mock(spec=UpdateAclService)
+    mock.update_acls.return_value = expected_valid_update_acl_response
+    return mock
+
+
 app.dependency_overrides[get_provision_service] = override_dependency
+app.dependency_overrides[get_update_acl_service] = override_acl_dependency
 
 
 def test_provisioning_invalid_descriptor():
@@ -144,5 +156,12 @@ def test_updateacl_valid_descriptor():
 
     resp = client.post("/v1/updateacl", json=jsonable_encoder(updateacl_request))
 
-    assert resp.status_code == 500
-    assert "Response not yet implemented" in resp.json().get("error")
+    assert resp.status_code == 200
+    assert resp.json() == {
+        "status": "COMPLETED",
+        "result": "",
+        "info": {
+            "publicInfo": {"updated_acls": [], "removed_acls": []},
+            "privateInfo": {},
+        },
+    }

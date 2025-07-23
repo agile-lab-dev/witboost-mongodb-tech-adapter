@@ -87,7 +87,7 @@ class OpenMetadataColumn(BaseModel):
 
 
 class DataContract(BaseModel):
-    schema_: Optional[List[OpenMetadataColumn]] = Field(..., alias="schema")
+    schema_: Optional[List[OpenMetadataColumn]] = Field(default=None, alias="schema")
 
 
 class DataSharingAgreement(BaseModel):

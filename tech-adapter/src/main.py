@@ -9,7 +9,7 @@ from starlette.responses import Response
 
 from src.app_config import app
 from src.check_return_type import check_response
-from src.dependencies import ProvisionServiceDep, UnpackedUpdateAclRequestDep
+from src.dependencies import ProvisionServiceDep, UnpackedUpdateAclRequestDep, UpdateAclServiceDep
 from src.models.api_models import (
     ProvisioningStatus,
     SystemErr,
@@ -134,7 +134,7 @@ def unprovision(request: ValidateMongoDBOutputPortDep, provision_service: Provis
     },
     tags=["TechAdapter"],
 )
-def updateacl(request: UnpackedUpdateAclRequestDep) -> Response:
+def updateacl(request: UnpackedUpdateAclRequestDep, update_acl_service: UpdateAclServiceDep) -> Response:
     """
     Request the access to a tech adapter component
     """
@@ -142,14 +142,9 @@ def updateacl(request: UnpackedUpdateAclRequestDep) -> Response:
     if isinstance(request, ValidationError):
         return check_response(out_response=request)
 
-    data_product, component_id, witboost_users = request
+    data_product, component, subcomponent_id, witboost_users = request
 
-    # todo: define correct response. You can define your pydantic component type with the expected specific schema
-    #  and use `.get_type_component_by_id` to extract it from the data product
-
-    # componentToProvision = data_product.get_typed_component_by_id(component_id, MyTypedComponent)
-
-    resp = SystemErr(error="Response not yet implemented")
+    resp = update_acl_service.update_acls(data_product, component, subcomponent_id, set(witboost_users))
 
     return check_response(out_response=resp)
 

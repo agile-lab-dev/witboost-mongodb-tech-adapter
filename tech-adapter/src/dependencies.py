@@ -10,9 +10,12 @@ from src.models.api_models import (
     ValidationError,
 )
 from src.models.data_product_descriptor import DataProduct
+from src.models.mongodb_models import MongoDBOutputPort
+from src.services.acl_service import AclService
 from src.services.mongo_client_service import MongoDBClientService
 from src.services.principal_mapping_service import PrincipalMappingService
 from src.services.provision_service import ProvisionService
+from src.services.update_acl_service import UpdateAclService
 from src.settings.mongodb_settings import MongoDBSettings
 from src.utility.parsing_pydantic_models import parse_yaml_with_model
 
@@ -80,7 +83,7 @@ UnpackedProvisioningRequestDep = Annotated[
 
 async def unpack_update_acl_request(
     update_acl_request: UpdateAclRequest,
-) -> Tuple[DataProduct, str, list[str]] | ValidationError:
+) -> Tuple[DataProduct, MongoDBOutputPort, str, list[str]] | ValidationError:
     """
     Unpacks an Update ACL Request.
 
@@ -91,10 +94,11 @@ async def unpack_update_acl_request(
         update_acl_request (UpdateAclRequest): The update ACL request to be unpacked.
 
     Returns:
-        Union[Tuple[DataProduct, str, List[str]], ValidationError]:
+        Union[Tuple[DataProduct, MongoDBOutputPort, str, List[str]], ValidationError]:
             - If successful, returns a tuple containing:
                 - `DataProduct`: The data product to update ACL for.
-                - `str`: The component ID to provision.
+                - `MongoDBOutputPort`: The component to provision.
+                - `str`: The subcomponent ID to provision.
                 - `List[str]`: A list of references.
             - If unsuccessful, returns a `ValidationError` object with error details.
 
@@ -109,11 +113,20 @@ async def unpack_update_acl_request(
     try:
         request = yaml.safe_load(update_acl_request.provisionInfo.request)
         data_product = parse_yaml_with_model(request.get("dataProduct"), DataProduct)
-        component_to_provision = request.get("componentIdToProvision")
+        subcomponent_to_provision: str = request.get("componentIdToProvision")
+
+        component_id = subcomponent_to_provision.rsplit(":", 1)[0]
+        if not isinstance(data_product, DataProduct):
+            return ValidationError(errors=["Invalid data product in the request."])
+        component_to_provision: MongoDBOutputPort = data_product.get_typed_component_by_id(
+            component_id, MongoDBOutputPort
+        )
+
         if isinstance(data_product, DataProduct):
             return (
                 data_product,
                 component_to_provision,
+                subcomponent_to_provision,
                 update_acl_request.refs,
             )
         elif isinstance(data_product, ValidationError):
@@ -125,7 +138,7 @@ async def unpack_update_acl_request(
 
 
 UnpackedUpdateAclRequestDep = Annotated[
-    Tuple[DataProduct, str, list[str]] | ValidationError,
+    Tuple[DataProduct, MongoDBOutputPort, str, list[str]] | ValidationError,
     Depends(unpack_update_acl_request),
 ]
 
@@ -139,8 +152,10 @@ def get_mongodb_client_service(
 ) -> MongoDBClientService:
     return MongoDBClientService(mongodb_settings)
 
+
 def get_mapping_service() -> PrincipalMappingService:
     return PrincipalMappingService()
+
 
 def get_provision_service(
     mongodb_client_service: Annotated[MongoDBClientService, Depends(get_mongodb_client_service)],
@@ -151,3 +166,24 @@ def get_provision_service(
 
 
 ProvisionServiceDep = Annotated[ProvisionService, Depends(get_provision_service)]
+
+
+def get_acl_service(
+    mongodb_settings: Annotated[MongoDBSettings, Depends(get_mongodb_settings)],
+) -> AclService:
+    return AclService(mongodb_settings)
+
+
+def get_update_acl_service(
+    principal_mapping_service: Annotated[PrincipalMappingService, Depends(get_mapping_service)],
+    acl_service: Annotated[AclService, Depends(get_acl_service)],
+    mongodb_client_service: Annotated[MongoDBClientService, Depends(get_mongodb_client_service)],
+    mongodb_settings: Annotated[MongoDBSettings, Depends(get_mongodb_settings)],
+) -> UpdateAclService:
+    return UpdateAclService(principal_mapping_service, acl_service, mongodb_client_service, mongodb_settings)
+
+
+UpdateAclServiceDep = Annotated[
+    UpdateAclService,
+    Depends(get_update_acl_service),
+]

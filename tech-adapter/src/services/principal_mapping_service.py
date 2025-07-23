@@ -3,20 +3,13 @@ from typing import Dict, Set, Union
 
 from loguru import logger
 
-from src.models.service_error import ServiceError
-
 # Constants for subject prefixes
 USER_PREFIX = "user:"
 
 
-class PrincipalMappingServiceError(ServiceError):
-    def __init__(self, error_msg: str):
-        self.error_msg = error_msg
-        super().__init__(self.error_msg)
-
-
 class MappingError(BaseException):
-    error: str
+    def __init__(self, error: str):
+        self.error = error
 
 
 class Mapper(ABC):
@@ -56,21 +49,22 @@ class PrincipalMappingService(Mapper):
         results: Dict[str, Union[str, MappingError]] = {}
         for ref in subjects:
             try:
+                logger.info(f"Mapping subject: {ref}")
                 results[ref] = self._map_subject(ref)
             except MappingError as e:
                 # Catch our custom, expected errors
-                logger.warning("Failed to map subject '{}': {}", ref, e)
+                logger.warning(f"Failed to map subject '{ref}': {e}")
                 results[ref] = e
         return results
 
-    def _map_subject(self, ref: str) -> str:
+    def _map_subject(self, ref: str) -> str | MappingError:
         if ref.startswith(USER_PREFIX):
             user_part = ref[len(USER_PREFIX) :]
             return self._get_and_map_user(user_part)
 
         error_msg = f"The subject '{ref}' isn't a Witboost user."
         logger.error(error_msg)
-        raise PrincipalMappingServiceError(error_msg)
+        raise MappingError(error_msg)
 
     def _get_and_map_user(self, user: str) -> str:
         try:
@@ -82,4 +76,4 @@ class PrincipalMappingService(Mapper):
         except Exception as e:
             error_msg = f"An unexpected error occurred while mapping the Witboost user '{user}'. Details: {e}"
             logger.error(error_msg)
-            raise PrincipalMappingServiceError(error_msg) from e
+            raise MappingError(error_msg) from e
