@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
+from bson import Binary
 from pymongo.errors import OperationFailure
 
 from src.services.mongo_client_service import MongoDBClientService, MongoDBClientServiceError
@@ -257,3 +258,59 @@ class TestMongoDBClientService(unittest.TestCase):
             self.service.create_collection("mydb", "mycollection", {})
 
         self.assertIn("error creating collection", str(context.exception))
+
+    def test_get_collections_info_success(self):
+        self.service.client.__getitem__.return_value = self.db_mock
+        self.db_mock.list_collection_names.return_value = ["col1", "col2"]
+        self.db_mock.command.side_effect = [
+            {
+                "cursor": {
+                    "firstBatch": [
+                        {
+                            "name": "col1",
+                            "type": "collection",
+                            "options": {"validator": {"$jsonSchema": {"bsonType": "object"}}},
+                            "info": {
+                                "readOnly": False,
+                                "uuid": Binary(b"P\xb6\xf7\xaf\t\xb7K\x86\x90]\x07S\xe3\xbe\xaa\xe5", 4),
+                            },
+                            "idIndex": {"v": 2, "key": {"_id": 1}, "name": "_id_"},
+                        },
+                        {
+                            "name": "col2",
+                            "type": "collection",
+                            "options": {},
+                            "info": {
+                                "readOnly": False,
+                                "uuid": Binary(b"\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10", 4),
+                            },
+                            "idIndex": {"v": 2, "key": {"_id": 1}, "name": "_id_"},
+                        },
+                    ]
+                },
+                "ok": 1.0,
+            }
+        ]
+
+        result = self.service.get_collections_info("mydb", ["col1", "col2"])
+
+        expected_result = [("col1", {"$jsonSchema": {"bsonType": "object"}}), ("col2", None)]
+        self.assertEqual(result, expected_result)
+
+    def test_get_collections_info_no_collections(self):
+        self.service.client.__getitem__.return_value = self.db_mock
+        self.db_mock.list_collection_names.return_value = []
+
+        result = self.service.get_collections_info("mydb", [])
+
+        self.assertEqual(result, [])
+
+    def test_get_collections_info_collection_failure(self):
+        self.service.client.__getitem__.return_value = self.db_mock
+        self.db_mock.list_collection_names.return_value = ["col1"]
+        self.db_mock.command.side_effect = OperationFailure("Collection not found")
+
+        with self.assertRaises(MongoDBClientServiceError) as context:
+            self.service.get_collections_info("mydb", ["col1"])
+
+        self.assertIn("Collection not found", str(context.exception))

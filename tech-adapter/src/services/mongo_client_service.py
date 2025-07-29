@@ -248,3 +248,43 @@ class MongoDBClientService:
             )
             logger.exception(error_message)
             raise MongoDBClientServiceError(error_message)
+
+    def get_collections_info(self, database_name: str, collections: list[str] | None) -> list[tuple[str, dict | None]]:
+        """Returns a list of collections informations in the specified database.
+
+        Args:
+            database_name (str): The name of the database.
+            collections (list[str] | None): A list of collection names to retrieve information for or None if the
+            collections list isn't specified in the parameters.
+
+        Returns:
+            list[tuple[str, dict | None]]: A list of collection names and their validators, if are present,
+            in the database or None if the collection does't have the validator.
+
+        Raises:
+            MongoDBClientServiceError: If the operation fails.
+        """
+        try:
+            db = self.client[database_name]
+            collections_filter = {}
+            if collections:
+                collections_filter = {"name": {"$in": collections}}
+                logger.debug(
+                    "Retrieving collections with filter {} for database {}.", collections_filter, database_name
+                )
+            else:
+                logger.debug("Retrieving all collections from database {}.", database_name)
+
+            response = db.command({"listCollections": 1, "filter": collections_filter})["cursor"]["firstBatch"]
+            logger.debug("Query response: {}", response)
+            return [
+                (collection_info["name"], collection_info.get("options", {}).get("validator"))
+                for collection_info in response
+            ]
+
+        except Exception as e:
+            error_message = (
+                f"Failed to retrieve collection information from database {database_name}. Details: {str(e)}"
+            )
+            logger.exception(error_message)
+            raise MongoDBClientServiceError(error_message)

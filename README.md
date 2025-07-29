@@ -129,7 +129,7 @@ Below are the variables you need to include:
 
 ```env
 # MongoDB connection string
-CONNECTION_STRING=mongodb://admin:admin@localhost:27017/
+CONNECTION_STRING=<your_connection_uri_here>
 
 # Name of the database that stores user information
 USERS_DATABASE=database_admin
@@ -144,16 +144,15 @@ CONSUMER_ACTIONS=["find"]
 ### Additional Info
 
 - The `CONNECTION_STRING` should point to your MongoDB instance.
-    - Make sure to replace `admin`, `admin`, `localhost`, and `27017` with your actual **username**, **password**, **host**, and **port**.
+    - Replace <your_connection_uri_here> with your actual MongoDB connection string.
 
 > For more details on how to configure MongoDB connections with Python, see the official documentation:
 [MongoClient — PyMongo documentation](https://www.mongodb.com/docs/languages/python/pymongo-driver/current/connect/mongoclient/)
 
 
-- `USERS_DATABASE`: The name of the MongoDB database that contains user documents.  
-  - This database must already exist in your local MongoDB instance.  
-  You should create the database manually, assign its name to the `USERS_DATABASE` environment variable,  
-  and add some test users to it in order to run the project correctly.
+- `USERS_DATABASE`: The name of the MongoDB database that contains user documents.
+  - This database must already exist in your local MongoDB instance.
+  You should create the database manually, assign its name to the `USERS_DATABASE` environment variable, and add some test users to it in order to run the project correctly.
 
 
 ## Running

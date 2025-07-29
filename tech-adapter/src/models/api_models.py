@@ -41,9 +41,7 @@ class ProvisioningRequestMongoDB(BaseModel):
     dataProduct: DataProduct
     component: MongoDBOutputPort = Field(
         ...,
-        description=(
-            "MongoDB Output Port component to be provisioned. "
-        ),
+        description=("MongoDB Output Port component to be provisioned. "),
     )
     subcomponentId: str = Field(
         ...,

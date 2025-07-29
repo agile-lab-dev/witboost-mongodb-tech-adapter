@@ -4,16 +4,20 @@ from unittest.mock import Mock
 from fastapi.encoders import jsonable_encoder
 from starlette.testclient import TestClient
 
-from src.dependencies import get_provision_service, get_update_acl_service
+from src.dependencies import create_reverse_provision_service, get_provision_service, get_update_acl_service
 from src.main import app
 from src.models.api_models import (
     DescriptorKind,
     ProvisionInfo,
     ProvisioningRequest,
     ProvisioningStatus,
+    ReverseProvisioningRequest,
+    ReverseProvisioningStatus,
     UpdateAclRequest,
+    ValidationError,
 )
 from src.services.provision_service import ProvisionService
+from src.services.reverse_provision_service import ReverseProvisionService
 from src.services.update_acl_service import UpdateAclService
 
 client = TestClient(app)
@@ -47,6 +51,25 @@ expected_valid_update_acl_response = ProvisioningStatus(
     status="COMPLETED", result="", info={"publicInfo": {"updated_acls": [], "removed_acls": []}, "privateInfo": {}}
 )
 
+expected_valid_reverse_provisioning_response = ReverseProvisioningStatus(
+    status="COMPLETED",
+    updates={
+        "parameters": {
+            "subcomponentDefinition": {
+                "components": [
+                    {
+                        "description": "collection1",
+                        "collection": "collection1",
+                        "jsonschema": '{"$jsonSchema": {"bsonType": "object", "required": ["name", "age"], '
+                        '"properties": {"name": {"bsonType": "string"}, "age": {"bsonType": "int", "minimum": 0}}}}',
+                    }
+                ]
+            }
+        },
+        "environmentParameters": {"development": {"database": "database"}},
+    },
+)
+
 
 def override_dependency() -> ProvisionService:
     mock = Mock()
@@ -61,8 +84,21 @@ def override_acl_dependency() -> UpdateAclService:
     return mock
 
 
+def override_reverse_provisioning_dependency() -> ReverseProvisionService:
+    mock = Mock(spec=ReverseProvisionService)
+
+    def reverse_provision_side_effect(request: ReverseProvisioningRequest):
+        if not isinstance(request.params, dict):
+            return ValidationError(errors=["Invalid parameters format"])
+        return expected_valid_reverse_provisioning_response
+
+    mock.reverse_provision.side_effect = reverse_provision_side_effect
+    return mock
+
+
 app.dependency_overrides[get_provision_service] = override_dependency
 app.dependency_overrides[get_update_acl_service] = override_acl_dependency
+app.dependency_overrides[create_reverse_provision_service] = override_reverse_provisioning_dependency
 
 
 def test_provisioning_invalid_descriptor():
@@ -165,3 +201,41 @@ def test_updateacl_valid_descriptor():
             "privateInfo": {},
         },
     }
+
+
+def test_reverse_provisioning_valid_descriptor():
+    reverse_provisioning_request = ReverseProvisioningRequest(
+        useCaseTemplateId="test", params={"database": "test", "collection": "test"}, environment="test"
+    )
+
+    resp = client.post("/v1/reverse-provisioning", json=jsonable_encoder(reverse_provisioning_request))
+
+    assert resp.status_code == 200
+    assert resp.json() == {
+        "status": "COMPLETED",
+        "updates": {
+            "parameters": {
+                "subcomponentDefinition": {
+                    "components": [
+                        {
+                            "description": "collection1",
+                            "collection": "collection1",
+                            "jsonschema": '{"$jsonSchema": {"bsonType": "object", "required": ["name", "age"], '
+                            '"properties": {"name": {"bsonType": "string"}, '
+                            '"age": {"bsonType": "int", "minimum": 0}}}}',
+                        }
+                    ]
+                }
+            },
+            "environmentParameters": {"development": {"database": "database"}},
+        },
+    }
+
+
+def test_reverse_provisioning_invalid_descriptor():
+    reverse_provisioning_request = ReverseProvisioningRequest(useCaseTemplateId="test", environment="test")
+
+    resp = client.post("/v1/reverse-provisioning", json=jsonable_encoder(reverse_provisioning_request))
+
+    assert resp.status_code == 400
+    assert "Invalid parameters format" in resp.json().get("errors")

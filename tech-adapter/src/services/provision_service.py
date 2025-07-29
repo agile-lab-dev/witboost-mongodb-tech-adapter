@@ -60,7 +60,11 @@ class ProvisionService:
 
             subcomponent = component.get_typed_subcomponent_by_id(subcomponent_id, MongoDBOutputPortSubComponent)
             logger.info(f"Creating collection {subcomponent.specific.collection}")
-            validator = json.loads(subcomponent.specific.valueSchema.definition)
+            if not subcomponent.specific.valueSchema:
+                logger.warning(f"No value schema provided for subcomponent {subcomponent_id}, using empty schema")
+            else:
+                logger.info(f"Using value schema for subcomponent {subcomponent_id}")
+                validator = json.loads(subcomponent.specific.valueSchema.definition)
             collection = self.mongodb_client_service.create_collection(
                 component.specific.database,
                 subcomponent.specific.collection,

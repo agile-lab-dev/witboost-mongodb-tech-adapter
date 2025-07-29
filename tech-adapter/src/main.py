@@ -9,9 +9,16 @@ from starlette.responses import Response
 
 from src.app_config import app
 from src.check_return_type import check_response
-from src.dependencies import ProvisionServiceDep, UnpackedUpdateAclRequestDep, UpdateAclServiceDep
+from src.dependencies import (
+    ProvisionServiceDep,
+    ReverseProvisionServiceDep,
+    UnpackedUpdateAclRequestDep,
+    UpdateAclServiceDep,
+)
 from src.models.api_models import (
     ProvisioningStatus,
+    ReverseProvisioningRequest,
+    ReverseProvisioningStatus,
     SystemErr,
     ValidationError,
     ValidationRequest,
@@ -212,5 +219,26 @@ def get_validation_status(
 
     # todo: define correct response
     resp = SystemErr(error="Response not yet implemented")
+
+    return check_response(out_response=resp)
+
+
+@app.post(
+    "/v1/reverse-provisioning",
+    response_model=None,
+    responses={
+        "200": {"model": ReverseProvisioningStatus},
+        "400": {"model": ValidationError},
+        "500": {"model": SystemErr},
+    },
+    tags=["TechAdapter"],
+)
+def reverse_provision(
+    body: ReverseProvisioningRequest, reverse_provision_service: ReverseProvisionServiceDep
+) -> Response:
+    """
+    Execute a reverse provisioning operation
+    """
+    resp = reverse_provision_service.reverse_provision(body)
 
     return check_response(out_response=resp)
