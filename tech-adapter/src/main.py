@@ -71,10 +71,14 @@ def provision(request: ValidateMongoDBOutputPortDep, provision_service: Provisio
     if isinstance(request, ValidationError):
         return check_response(out_response=request)
 
-    logger.info("Provisioning component with id: " + request.component.id)
+    logger.info(f"Provisioning subcomponent with id: {request.subcomponentId}")
 
     resp = provision_service.provision(
-        request.dataProduct, request.component, request.subcomponentId, request.removeData
+        request.dataProduct,
+        request.component,
+        request.subcomponentId,
+        request.removeData,
+        request.is_parent_component,
     )
 
     return check_response(out_response=resp)
@@ -124,7 +128,11 @@ def unprovision(request: ValidateMongoDBOutputPortDep, provision_service: Provis
     logger.info("Unprovisioning subcomponent with id: " + request.subcomponentId)
 
     resp = provision_service.unprovision(
-        request.dataProduct, request.component, request.subcomponentId, request.removeData
+        request.dataProduct,
+        request.component,
+        request.subcomponentId,
+        request.removeData,
+        request.is_parent_component,
     )
 
     return check_response(out_response=resp)

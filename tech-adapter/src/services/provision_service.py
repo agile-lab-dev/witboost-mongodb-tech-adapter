@@ -2,13 +2,15 @@ import json
 
 from loguru import logger
 
-from src.models.api_models import Info, ProvisioningStatus, Status1, SystemErr
+from src.models.api_models import Info, ProvisioningStatus, Status1, SystemErr, ValidationError
 from src.models.data_product_descriptor import DataProduct
 from src.models.mongodb_models import MongoDBOutputPort, MongoDBOutputPortSubComponent
 from src.models.service_error import ServiceError
 from src.services.mongo_client_service import MongoDBClientService
 from src.services.principal_mapping_service import MappingError, PrincipalMappingService
 from src.settings.mongodb_settings import MongoDBSettings
+
+LEN_SUBCOMPONENT_ID = 8
 
 
 class ProvisionService:
@@ -28,9 +30,39 @@ class ProvisionService:
         component: MongoDBOutputPort,
         subcomponent_id: str,
         remove_data: bool | None = None,
-    ) -> ProvisioningStatus | SystemErr:
+        is_parent_component: bool | None = None,
+    ) -> ProvisioningStatus | SystemErr | ValidationError:
         try:
+            if len(subcomponent_id.split(":")) < LEN_SUBCOMPONENT_ID and is_parent_component:
+                if component.useCaseTemplateId != self.mongodb_settings.useCaseTemplateId:
+                    return ValidationError(
+                        errors=[
+                            f"Component use case template ID does not match: "
+                            f"component='{component.useCaseTemplateId}', "
+                            f"expected='{self.mongodb_settings.useCaseTemplateId}'"
+                        ]
+                    )
+                return ProvisioningStatus(
+                    status=Status1.COMPLETED,
+                    result="",
+                    info=Info(
+                        publicInfo={"message": "Component already provisioned, no action taken"},
+                        privateInfo=dict(),
+                    ),
+                )
+
             logger.info(f"Starting provisioning for subcomponent {subcomponent_id}")
+
+            subcomponent = component.get_typed_subcomponent_by_id(subcomponent_id, MongoDBOutputPortSubComponent)
+
+            if subcomponent.useCaseTemplateId != self.mongodb_settings.useCaseTemplateSubId:
+                return ValidationError(
+                    errors=[
+                        f"Subcomponent use case template ID does not match: "
+                        f"component='{subcomponent.useCaseTemplateId}', "
+                        f"expected='{self.mongodb_settings.useCaseTemplateSubId}'"
+                    ]
+                )
 
             database_name = component.specific.database
             logger.info(f"Managing database {database_name}")
@@ -58,7 +90,6 @@ class ProvisionService:
                 roles=[{"role": role, "db": database_name} for role in self.mongodb_settings.developer_roles],
             )
 
-            subcomponent = component.get_typed_subcomponent_by_id(subcomponent_id, MongoDBOutputPortSubComponent)
             logger.info(f"Creating collection {subcomponent.specific.collection}")
             if not subcomponent.specific.valueSchema:
                 logger.warning(f"No value schema provided for subcomponent {subcomponent_id}, using empty schema")
@@ -118,8 +149,12 @@ class ProvisionService:
         component: MongoDBOutputPort,
         subcomponent_id: str,
         remove_data: bool | None = None,
+        is_parent_component: bool | None = None,
     ) -> ProvisioningStatus | SystemErr:
         try:
+            if len(subcomponent_id.split(":")) < LEN_SUBCOMPONENT_ID and is_parent_component:
+                return ProvisioningStatus(status=Status1.COMPLETED, result="")
+
             logger.info(f"Starting unprovisioning for subcomponent {subcomponent_id}")
             subcomponent = component.get_typed_subcomponent_by_id(subcomponent_id, MongoDBOutputPortSubComponent)
 

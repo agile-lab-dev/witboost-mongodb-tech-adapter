@@ -154,7 +154,7 @@ dataProduct:
           fullyQualifiedName: MongoDB Output Port
           version: 0.0.0
           infrastructureTemplateId: urn:dmb:itm:mongodb-outputport-provisioner:0
-          useCaseTemplateId: urn:dmb:utm:mongodb-outputport-template:0.0.0
+          useCaseTemplateId: urn:dmb:utm:mongodb-outputport-subcomponent-template:0.0.0
           dependsOn:
             - urn:dmb:cmp:healthcare:vaccinations:0:mongodb-storage
           platform: Snowflake

@@ -107,10 +107,6 @@ class AclService:
         errors = []
         removed_users: list[PrincipalMappingService] = []
 
-        if not principals:
-            logger.warning("No principals provided to remove ACLs from.")
-            return None, removed_users
-
         users = self.client[self.mongodb_settings.users_database].command(
             {
                 "usersInfo": 1,

@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36" version="27.1.6" pages="4">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" version="28.0.7" pages="4">
   <diagram id="MuDPEi7VDMRZLupdT4kF" name="Output Port - Provision">
-    <mxGraphModel dx="989" dy="450" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" background="#ffffff" math="0" shadow="0">
+    <mxGraphModel dx="1185" dy="516" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -240,31 +240,25 @@
         <mxCell id="SVzrMivq5b3QNxKFX50J-10" value="" style="dashed=0;outlineConnect=0;html=1;align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;shape=mxgraph.weblogos.mongodb" parent="1" vertex="1">
           <mxGeometry x="855" y="118.75" width="10.6" height="22.18" as="geometry" />
         </mxCell>
-        <mxCell id="khWf4gQ5PBmO5c-KC6qP-1" value="Collection:&lt;div&gt;Name&lt;/div&gt;" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;" parent="1" vertex="1">
-          <mxGeometry x="1690" y="619" width="250" height="105.79" as="geometry" />
-        </mxCell>
-        <mxCell id="khWf4gQ5PBmO5c-KC6qP-2" value="Collection:&lt;div&gt;Name&lt;/div&gt;" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;" parent="1" vertex="1">
-          <mxGeometry x="1700" y="629" width="250" height="105.79" as="geometry" />
-        </mxCell>
-        <mxCell id="_fsrqkB2BTYyJjiHSIYh-1" value="find" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="_fsrqkB2BTYyJjiHSIYh-1" value="find" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1350" y="1260" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="DmHbDQ4kK1QbPgqzauKO-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=-0.001;entryY=0.581;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="HjIVLfHDnNX-_gVRF_XU-42" target="HjIVLfHDnNX-_gVRF_XU-91">
+        <mxCell id="DmHbDQ4kK1QbPgqzauKO-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=-0.001;entryY=0.581;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="HjIVLfHDnNX-_gVRF_XU-42" target="HjIVLfHDnNX-_gVRF_XU-91" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1404" y="694" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="DmHbDQ4kK1QbPgqzauKO-2" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 11px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: nowrap; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;&quot;&gt;assign dpOwner&lt;/span&gt;&lt;div style=&quot;forced-color-adjust: none; color: rgb(0, 0, 0); font-family: Helvetica; font-size: 11px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: nowrap; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;and devGroup to&lt;/div&gt;&lt;div style=&quot;forced-color-adjust: none; color: rgb(0, 0, 0); font-family: Helvetica; font-size: 11px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: nowrap; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;developer role&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="DmHbDQ4kK1QbPgqzauKO-2" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 11px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: nowrap; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;&quot;&gt;assign dpOwner&lt;/span&gt;&lt;div style=&quot;forced-color-adjust: none; color: rgb(0, 0, 0); font-family: Helvetica; font-size: 11px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: nowrap; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;and devGroup to&lt;/div&gt;&lt;div style=&quot;forced-color-adjust: none; color: rgb(0, 0, 0); font-family: Helvetica; font-size: 11px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: nowrap; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;developer role&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1329" y="600" width="110" height="63" as="geometry" />
         </mxCell>
-        <mxCell id="oqmoc6Jrec-dTDZbZgup-1" value="4. Create collection and setup the schema validator" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;align=left;fontSize=14;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="oqmoc6Jrec-dTDZbZgup-1" value="4. Create collection and setup the schema validator" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;align=left;fontSize=14;spacingLeft=6;" parent="1" vertex="1">
           <mxGeometry x="720" y="658" width="320" height="46" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
   <diagram name="Output Port - Unprovision" id="NFQ8KQ5uVUrKaLiA25wc">
-    <mxGraphModel dx="2067" dy="940" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" background="#ffffff" math="0" shadow="0">
+    <mxGraphModel dx="1693" dy="737" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="v99OWeCuwB_WFX5Km84O-0" />
         <mxCell id="v99OWeCuwB_WFX5Km84O-1" parent="v99OWeCuwB_WFX5Km84O-0" />
@@ -412,14 +406,14 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="dDLRlXmc9taoIO81ZIhC-2" value="5 - Return response" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;align=left;fontSize=14;spacingLeft=6;" vertex="1" parent="v99OWeCuwB_WFX5Km84O-1">
+        <mxCell id="dDLRlXmc9taoIO81ZIhC-2" value="5 - Return response" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;align=left;fontSize=14;spacingLeft=6;" parent="v99OWeCuwB_WFX5Km84O-1" vertex="1">
           <mxGeometry x="720" y="710" width="320" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
   <diagram name="Output Port - Update ACL" id="6idFRdBY-ZA2X_VTItW6">
-    <mxGraphModel dx="1030" dy="451" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1077" dy="469" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="xOdlWwNQsHCnQ3krra8X-0" />
         <mxCell id="xOdlWwNQsHCnQ3krra8X-1" parent="xOdlWwNQsHCnQ3krra8X-0" />
@@ -520,7 +514,7 @@
         <mxCell id="GcKkf32KpHTP6Pfpo0JK-65" value="Consumer and developer roles" style="rounded=0;whiteSpace=wrap;html=1;" parent="xOdlWwNQsHCnQ3krra8X-1" vertex="1">
           <mxGeometry x="1270" y="621.5" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="GcKkf32KpHTP6Pfpo0JK-66" value="&lt;div&gt;descriptor:&lt;/div&gt;&lt;div&gt;&amp;nbsp; owner&lt;/div&gt;&lt;div&gt;&amp;nbsp; devGroup&lt;/div&gt;&amp;nbsp; DB name: *autogenerated*&lt;div&gt;&amp;nbsp; For each collection:&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp; - collection name&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp; - json schema (no typical dataContract.schema)&lt;/div&gt;&lt;div&gt;refs: granted user/group list&lt;/div&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;direction=west;base=40;size=80;position=0.75;position2=0.68;align=left;" parent="xOdlWwNQsHCnQ3krra8X-1" vertex="1">
+        <mxCell id="GcKkf32KpHTP6Pfpo0JK-66" value="&lt;div&gt;descriptor:&lt;/div&gt;&lt;div&gt;&amp;nbsp; owner&lt;/div&gt;&lt;div&gt;&amp;nbsp; devGroup&lt;/div&gt;&amp;nbsp; DB name: *autogenerated*&lt;div&gt;&amp;nbsp; Collection name&lt;/div&gt;&lt;div&gt;refs: granted user/group list&lt;/div&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;direction=west;base=40;size=80;position=0.75;position2=0.68;align=left;" parent="xOdlWwNQsHCnQ3krra8X-1" vertex="1">
           <mxGeometry x="490" y="750" width="280" height="230" as="geometry" />
         </mxCell>
         <mxCell id="GcKkf32KpHTP6Pfpo0JK-67" value="MongoDB Tech Adapter" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;strokeWidth=2;fontSize=13;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="xOdlWwNQsHCnQ3krra8X-1" vertex="1">
@@ -578,7 +572,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="oQ12My6U32Pm9eI-2GT2" name="Output Port - Reverse Provisioning">
-    <mxGraphModel dx="1691" dy="353" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="1185" dy="116" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />

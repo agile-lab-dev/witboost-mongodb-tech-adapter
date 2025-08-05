@@ -15,7 +15,7 @@ A Helm chart for Kubernetes
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | dockerRegistrySecretName | string | `"regcred"` | Docker Registry Secret name used to access a private repo |
-| extraEnvVars | list | `[{"name":"CONNECTION_STRING","valueFrom":{"secretKeyRef":{"key":"CONNECTION_STRING","name":"mongodb-addons-secrets"}}},{"name":"USERS_DATABASE","value":""},{"name":"DEVELOPER_ROLES","value":[]},{"name":"CONSUMER_ACTIONS","value":[]}]` | define extra variables to add to the container(s) e.g: extraEnvVars:   - name: FOO     value: "10" |
+| extraEnvVars | list | `[{"name":"CONNECTION_STRING","valueFrom":{"secretKeyRef":{"key":"CONNECTION_STRING","name":"mongodb-addons-secrets"}}},{"name":"USERS_DATABASE","value":""},{"name":"DEVELOPER_ROLES","value":[]},{"name":"CONSUMER_ACTIONS","value":[]},{"name":"USECASETEMPLATEID","value":"urn:dmb:utm:mongodb-outputport-template:0.0.0"},{"name":"USECASETEMPLATESUBID","value":"urn:dmb:utm:mongodb-outputport-subcomponent-template:0.0.0"}]` | define extra variables to add to the container(s) e.g: extraEnvVars:   - name: FOO     value: "10" |
 | image.pullPolicy | string | `"Always"` | The imagePullPolicy for a container and the tag of the image affect when the kubelet attempts to pull (download) the specified image. |
 | image.registry | string | `"registry.gitlab.com/agilefactory/witboost.mesh/provisioning/witboost.mesh.provisioning.mongodb"` | Image repository |
 | image.tag | string | `"latest"` | Image tag |

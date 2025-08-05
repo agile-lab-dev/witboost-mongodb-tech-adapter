@@ -8,5 +8,7 @@ class MongoDBSettings(BaseSettings):
     users_database: str
     developer_roles: List[str]
     consumer_actions: List[str]
+    useCaseTemplateId: str
+    useCaseTemplateSubId: str
 
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore", case_sensitive=False)

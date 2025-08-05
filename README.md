@@ -22,6 +22,30 @@ This repository is part of our [Starter Kit](https://github.com/agile-lab-dev/wi
 
 This project implements a Tech Adapter for MongoDB implemented using Python & FastAPI.
 
+### Supported Operations
+
+- **Provision**
+  Creates a MongoDB collection and assigns roles:
+  - `database_developer`: full access
+  - `database_collection_consumer`: read-only access
+- **Unprovision**
+  Deletes a collection (optional data removal) and updates related roles.
+- **Update ACL**
+  Adds or modifies consumer roles for a specific database/collection.
+- **Reverse Provision**
+  Discovers and registers existing collections from a MongoDB database.
+
+### Access Control
+
+Role management is currently limited to the **Data Product Owner**.
+
+- `database_developer`: full read/write access (similar to MongoDB `dbOwner`)
+- `database_collection_consumer`: custom read-only role (only `find` action allowed)
+
+> ℹ️ Role names include the actual `database` and `collection` names.
+
+> 🔗 See [MongoDB Authorization Docs](https://www.mongodb.com/docs/manual/core/authorization/) for more details.
+
 ### What's a Tech Adapter?
 
 A Tech Adapter is a microservice which is in charge of deploying components that use a specific technology. When the deployment of a Data Product is triggered, the platform generates it descriptor and orchestrates the deployment of every component contained in the Data Product. For every such component the platform knows which Tech Adapter is responsible for its deployment, and can thus send a provisioning request with the descriptor to it so that the Tech Adapter can perform whatever operation is required to fulfill this request and report back the outcome to the platform.
@@ -30,7 +54,22 @@ You can learn more about how the Tech Adapters fit in the broader picture [here]
 
 ### MongoDB
 
-MongoDB is a document-oriented NoSQL database designed for high performance, scalability, and ease of development.
+MongoDB is a general-purpose, document-oriented NoSQL database designed for high performance, high availability, and easy scalability. It stores data in flexible, JSON-like documents, meaning fields can vary from document to document and data structure can be changed over time.
+
+MongoDB combines the power of traditional relational databases with the flexibility of modern NoSQL architectures. It is designed to handle large volumes of structured and unstructured data, making it ideal for a wide range of applications — from real-time analytics to content management and IoT.
+
+For example, MongoDB supports powerful indexing and querying capabilities, dynamic schemas, and horizontal scalability through sharding. Its architecture also enables high availability through replica sets and built-in fault tolerance.
+
+MongoDB provides the foundation for building modern, cloud-native applications that need to process and serve massive amounts of data in real time. It is widely used across industries for its developer-friendly model and operational simplicity.
+
+- MongoDB includes the following key capabilities:
+- Flexible, document-based data model
+- Powerful query language and secondary indexes
+- Horizontal scalability with sharding
+- High availability with replica sets
+- Integrated aggregation framework for analytics
+- Rich ecosystem of drivers and tools
+- Cloud-native experience with MongoDB Atlas
 
 Learn more on [MongoDB documentation](https://www.mongodb.com/docs/)
 
@@ -139,6 +178,12 @@ DEVELOPER_ROLES=["dbOwner"]
 
 # Actions allowed for consumers
 CONSUMER_ACTIONS=["find"]
+
+# Use case template ID for MongoDB output port components
+USECASETEMPLATEID=urn:dmb:utm:mongodb-outputport-template:0.0.0
+
+# Use case template ID for MongoDB output port subcomponents
+USECASETEMPLATESUBID=urn:dmb:utm:mongodb-outputport-subcomponent-template:0.0.0
 ```
 
 ### Additional Info
@@ -153,6 +198,16 @@ CONSUMER_ACTIONS=["find"]
 - `USERS_DATABASE`: The name of the MongoDB database that contains user documents.
   - This database must already exist in your local MongoDB instance.
   You should create the database manually, assign its name to the `USERS_DATABASE` environment variable, and add some test users to it in order to run the project correctly.
+
+- `USECASETEMPLATEID` / `USECASETEMPLATESUBID`: Unique identifiers for MongoDB output port templates.
+  - These identifiers are used to validate that provisioning requests match the expected MongoDB templates.
+  - `USECASETEMPLATEID`: for the main component template
+  - `USECASETEMPLATESUBID`: for the subcomponent template
+  - They must match the `useCaseTemplateId` fields in the component/subcomponent descriptors of Data Products.
+  - **Default values**: 
+    - `urn:dmb:utm:mongodb-outputport-template:0.0.0` (component)
+    - `urn:dmb:utm:mongodb-outputport-subcomponent-template:0.0.0` (subcomponent)
+  - Use these default values unless you have custom templates.
 
 
 ## Running

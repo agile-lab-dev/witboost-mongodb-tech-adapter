@@ -51,6 +51,10 @@ class ProvisioningRequestMongoDB(BaseModel):
         default=None,
         description="If true, when a component is undeployed, its underlying data will also be deleted",
     )  # noqa: E501
+    is_parent_component: bool = Field(
+        default=False,
+        description="If true, the component is already provisioned and only needs to be updated",
+    )
 
 
 class Status1(Enum):

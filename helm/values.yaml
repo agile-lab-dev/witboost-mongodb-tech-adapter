@@ -30,6 +30,10 @@ extraEnvVars:
     value: []
   - name: CONSUMER_ACTIONS
     value: []
+  - name: USECASETEMPLATEID
+    value: "urn:dmb:utm:mongodb-outputport-template:0.0.0"
+  - name: USECASETEMPLATESUBID
+    value: "urn:dmb:utm:mongodb-outputport-subcomponent-template:0.0.0"
 
 # -- readiness probe spec
 readinessProbe: {}

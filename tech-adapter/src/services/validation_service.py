@@ -8,6 +8,7 @@ from src.dependencies import UnpackedProvisioningRequestDep
 from src.models.api_models import ProvisioningRequestMongoDB, ValidationError
 from src.models.mongodb_models import MongoDBOutputPort
 
+LEN_SUBCOMPONENT_ID = 8
 
 def validate_mongodb_output_port(
     request: UnpackedProvisioningRequestDep,
@@ -16,10 +17,18 @@ def validate_mongodb_output_port(
         return request
 
     data_product, subcomponent_id, remove_data = request
-
-    component_id = subcomponent_id.rsplit(":", 1)[0]
+    is_parent_component = False
+    is_subcomponent = len(subcomponent_id.split(":")) == LEN_SUBCOMPONENT_ID
 
     try:
+        if is_subcomponent:
+            logger.info("Subcomponent detected")
+            component_id = subcomponent_id.rsplit(":", 1)[0]
+        else:
+            is_parent_component = True
+            logger.info("Parent component detected")
+            component_id = subcomponent_id
+
         component_to_provision = data_product.get_typed_component_by_id(component_id, MongoDBOutputPort)
     except pydantic.ValidationError as ve:
         error_msg = f"Failed to parse the component {component_id} as a MongoDB OutputPort:"
@@ -43,6 +52,7 @@ def validate_mongodb_output_port(
         component=component_to_provision,
         subcomponentId=subcomponent_id,
         removeData=remove_data,
+        is_parent_component=is_parent_component,
     )
 
 
