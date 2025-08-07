@@ -21,19 +21,25 @@ This repository is part of our [Starter Kit](https://github.com/agile-lab-dev/wi
 ## Overview
 
 This project implements a Tech Adapter for MongoDB implemented using Python & FastAPI.
+The MongoDB Tech Adapter acts as a middleware between the **Witboost MongoDB Output Port** and the **MongoDB instance**. Once this microservice is deployed and configured within Witboost, the platform can deploy components that interact with MongoDB.
+
+![MongoDB-TA-architecture](docs/img/mongodb-TA-architecture.png)
 
 ### Supported Operations
 
-- **Provision**
-  Creates a MongoDB collection and assigns roles:
-  - `database_developer`: full access
-  - `database_collection_consumer`: read-only access
-- **Unprovision**
-  Deletes a collection (optional data removal) and updates related roles.
-- **Update ACL**
-  Adds or modifies consumer roles for a specific database/collection.
-- **Reverse Provision**
-  Discovers and registers existing collections from a MongoDB database.
+**Database Creation**:
+if the specified database does not already exist in the MongoDB instance, the Tech Adapter creates it. The database follows a naming convention:
+`<domain>_<system>_<system_major_version>_<env>`
+
+**Collection Management**:
+one or more collections can be created within the database. The adapter also supports removal of existing collections as defined in the YAML descriptor.
+
+**Role and Permission Management**:
+creates or updates MongoDB roles, typically for **consumer** and **developer** access levels. These roles are assigned appropriate permissions for the collections.
+
+**Metadata Import**:
+import metadata from the MongoDB instance back into the YAML descriptor. This helps synchronize the descriptor with the current state of the database.
+
 
 ### Access Control
 
